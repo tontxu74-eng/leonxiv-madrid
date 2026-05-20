@@ -124,6 +124,21 @@ window.aplicarActualizacion = function() {
   });
 };
 
+window.forzarActualizacion = async function() {
+  showToast("Limpiando caché y actualizando...", "info");
+  try {
+    // Desregistrar todos los Service Workers
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(r => r.unregister()));
+    // Borrar todas las cachés
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map(name => caches.delete(name)));
+  } catch (e) {
+    console.warn("Error al limpiar caché:", e);
+  }
+  window.location.reload(true);
+};
+
 // --- CONFIGURACIÓN DE FIREBASE ---
 
 // Carga los SDKs de Firebase desde el CDN solo cuando se necesitan
