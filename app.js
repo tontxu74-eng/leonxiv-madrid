@@ -144,29 +144,29 @@ function loadFirebaseScripts() {
   });
 }
 
+// Configuración de producción (siempre activa)
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAGCnoClKd_D-OnFTAbx-7Xr6mqF8tz9CY",
+  authDomain: "leonxiv-uap.firebaseapp.com",
+  projectId: "leonxiv-uap",
+  storageBucket: "leonxiv-uap.firebasestorage.app",
+  messagingSenderId: "549657606381",
+  appId: "1:549657606381:web:810f4a505181eea0a5b4e4"
+};
+
 function setupFirebase() {
+  // Usar config del panel admin si existe, si no la config de producción
+  let config = FIREBASE_CONFIG;
   const savedConfig = localStorage.getItem('uap_firebase_config');
-
-  // Sin config guardada → modo local directo, sin tocar la red
-  if (!savedConfig) {
-    appState.firebaseEnabled = false;
-    updateNetworkBadge(false);
-    loadLocalData();
-    return;
+  if (savedConfig) {
+    try {
+      config = JSON.parse(savedConfig);
+    } catch (e) {
+      console.warn("Config de Firebase en localStorage corrupta, usando config de producción");
+    }
   }
 
-  let config = null;
-  try {
-    config = JSON.parse(savedConfig);
-  } catch (e) {
-    console.error("Configuración de Firebase corrupta en localStorage", e);
-    appState.firebaseEnabled = false;
-    updateNetworkBadge(false);
-    loadLocalData();
-    return;
-  }
-
-  // Hay config → cargar Firebase dinámicamente y conectar
+  // Siempre conectar a Firebase → cargar SDK dinámicamente
   loadFirebaseScripts()
     .then(() => {
       if (firebase.apps.length > 0) firebase.app().delete();
