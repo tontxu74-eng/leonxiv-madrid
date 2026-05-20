@@ -948,9 +948,10 @@ function renderContacts() {
 
 // Actualizar Estadísticas en Dashboard
 function updateDashboardStats() {
-  const uasCount = appState.teams.filter(t => t.type === 'UAS').length;
-  const cuasCount = appState.teams.filter(t => t.type === 'CUAS').length;
-  const heloCount = appState.teams.filter(t => t.type === 'HELO').length;
+  const tiene = (team, tipo) => (team.type || '').split(',').includes(tipo);
+  const uasCount  = appState.teams.filter(t => tiene(t, 'UAS')).length;
+  const cuasCount = appState.teams.filter(t => tiene(t, 'CUAS')).length;
+  const heloCount = appState.teams.filter(t => tiene(t, 'HELO')).length;
   const totalCount = appState.teams.length;
 
   const uasBadge = document.getElementById('stat-uas');
