@@ -43,6 +43,12 @@ self.addEventListener('message', (event) => {
 self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith('http')) return;
 
+  // version.json: SIEMPRE red, nunca caché — es el mecanismo de detección de actualizaciones
+  if (event.request.url.includes('version.json')) {
+    event.respondWith(fetch(event.request, { cache: 'no-store' }));
+    return;
+  }
+
   // En desarrollo local: siempre red primero
   const isLocalhost = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
   if (isLocalhost) {

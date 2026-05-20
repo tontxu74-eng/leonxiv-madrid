@@ -43,7 +43,31 @@ document.addEventListener('DOMContentLoaded', () => {
   initApp();
 });
 
+async function checkForUpdates() {
+  try {
+    const res = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+    const versionGuardada = localStorage.getItem('uap_app_version');
+    if (versionGuardada && versionGuardada !== data.v) {
+      // Nueva versión detectada: limpiar caché y recargar
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map(k => caches.delete(k)));
+      }
+      localStorage.setItem('uap_app_version', data.v);
+      window.location.reload(true);
+      return;
+    }
+    localStorage.setItem('uap_app_version', data.v);
+  } catch (e) {
+    // Sin red — continuar con la versión cacheada sin interrumpir
+  }
+}
+
 function initApp() {
+  // Comprobar si hay una versión nueva disponible
+  checkForUpdates();
+
   // Cargar PIN guardado o establecer el por defecto
   const savedPin = localStorage.getItem('uap_admin_pin');
   if (savedPin) appState.adminPin = savedPin;
