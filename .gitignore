@@ -1,0 +1,12 @@
+# Logs de Firebase
+firebase-debug.log
+firebase-debug.*.log
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
+
+# Editores
+.vscode/
+*.suo
+*.user

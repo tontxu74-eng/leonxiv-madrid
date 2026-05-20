@@ -1,0 +1,1223 @@
+/* style.css - Diseño Premium Táctico para la Unidad Aérea de la Policía */
+
+/* Importar tipografía moderna */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Paleta táctica HSL */
+  --bg-darker: 222, 47%, 7%;     /* #0b0f19 */
+  --bg-dark: 222, 47%, 11%;      /* #0f172a */
+  --bg-card: 222, 47%, 15%;      /* #1e293b */
+  --text-primary: 210, 40%, 98%; /* #f8fafc */
+  --text-secondary: 215, 25%, 72%;/* #94a3b8 */
+  --text-muted: 215, 16%, 47%;   /* #64748b */
+  
+  /* Colores de acento */
+  --police-blue: 217, 91%, 60%;  /* #3b82f6 (Azul Policía) */
+  --police-blue-hover: 217, 91%, 50%;
+  --gold-papal: 45, 93%, 47%;    /* #d97706 (Dorado Vaticano/SS León XIV) */
+  --gold-papal-hover: 45, 93%, 37%;
+  --success: 142, 71%, 45%;      /* #10b981 (Disponible / Seguro) */
+  --danger: 0, 84%, 60%;         /* #ef4444 (Restringido / C-UAS Activo) */
+  --warning: 38, 92%, 50%;       /* #f59e0b (Alerta / En Operación) */
+  
+  /* Efectos y bordes */
+  --border-glow: hsla(217, 91%, 60%, 0.15);
+  --border-color: hsla(217, 30%, 30%, 0.35);
+  --border-focus: hsla(217, 91%, 60%, 0.6);
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-blur: 16px;
+  
+  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --border-radius-lg: 16px;
+  --border-radius-md: 12px;
+  --border-radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: hsl(var(--bg-darker));
+  color: hsl(var(--text-primary));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+html {
+  min-height: 100vh;
+}
+
+/* --- Layout Principal --- */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Cabecera Táctica */
+.app-header {
+  position: sticky;
+  top: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px hsla(var(--police-blue), 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: #0b0f19;
+  flex-shrink: 0;
+}
+
+.header-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.header-subtitle {
+  font-size: 0.75rem;
+  color: hsl(var(--text-secondary));
+  letter-spacing: 0.5px;
+}
+
+/* Estado de Conexión */
+.connection-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--success));
+}
+
+.connection-badge.offline {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: hsl(var(--danger));
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Área de Contenido Principal */
+.app-content {
+  flex: 1;
+  position: relative;
+}
+
+/* Vista SPA (Pestaña) */
+.tab-view {
+  display: none;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Barra de Navegación Táctica (Inferior en Móvil) --- */
+.app-nav {
+  position: sticky;
+  bottom: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 4px;
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  color: hsl(var(--text-secondary));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: 0.72rem;
+  font-weight: 500;
+  transition: var(--transition-smooth);
+  flex: 1;
+  max-width: 90px;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+  transition: var(--transition-smooth);
+}
+
+.nav-item:hover {
+  color: hsl(var(--text-primary));
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item.active {
+  color: hsl(var(--police-blue));
+}
+
+.nav-item.active svg {
+  stroke: hsl(var(--police-blue));
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 6px hsla(var(--police-blue), 0.5));
+}
+
+/* --- Elementos de UI Generales (Dashboard, Tarjetas, Botones) --- */
+.page-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  background: linear-gradient(to right, #fff, hsl(var(--text-secondary)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.page-subtitle {
+  font-size: 0.88rem;
+  color: hsl(var(--text-secondary));
+  margin-bottom: 24px;
+}
+
+.card {
+  background: hsl(var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.card:hover::before {
+  transform: translateX(100%);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title svg {
+  color: hsl(var(--police-blue));
+}
+
+/* Botones Tácticos */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, hsl(var(--police-blue)), hsla(var(--police-blue), 0.8));
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  width: 100%;
+  min-height: 48px; /* Altura óptima para dedos */
+  box-shadow: 0 4px 14px hsla(var(--police-blue), 0.35);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px hsla(var(--police-blue), 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  color: hsl(var(--text-primary));
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, hsl(var(--danger)), hsla(var(--danger), 0.8));
+  box-shadow: 0 4px 14px hsla(var(--danger), 0.35);
+}
+
+.btn-sm {
+  min-height: 38px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  border-radius: var(--border-radius-sm);
+}
+
+/* Indicativos / Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.badge-gold { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
+.badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+.badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+/* --- Pestaña: Dashboard / Inicio --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--border-radius-md);
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--police-blue));
+}
+
+.stat-icon.warning-color {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  color: hsl(var(--warning));
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-num {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stat-label {
+  font-size: 0.78rem;
+  color: hsl(var(--text-secondary));
+}
+
+/* Alertas de Canal de Transmisión */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.alert-item {
+  border-left: 3px solid hsl(var(--warning));
+  background: rgba(245, 158, 11, 0.05);
+  padding: 10px 12px;
+  border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+  font-size: 0.85rem;
+}
+
+.alert-item.urgent {
+  border-left-color: hsl(var(--danger));
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.alert-time {
+  color: hsl(var(--text-muted));
+}
+
+/* --- Pestaña: Mapa Táctico --- */
+#map-tab {
+  padding: 0;
+  height: 100%;
+}
+
+.map-container-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 63px - 65px); /* Restando cabecera y navbar */
+  position: relative;
+}
+
+#map {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: hsl(var(--bg-darker));
+}
+
+/* Filtro táctico oscuro para mapas de OpenStreetMap */
+.leaflet-tile {
+  filter: invert(100%) hue-rotate(180deg) brightness(85%) contrast(110%);
+}
+
+/* Controles flotantes en mapa */
+.map-overlay-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 999;
+  max-width: 280px;
+  pointer-events: auto;
+}
+
+.tactical-info-box {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  font-size: 0.78rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  color: hsl(var(--text-primary));
+}
+
+.tactical-info-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  color: hsl(var(--police-blue));
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.tactical-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+/* Personalización del Popup de Leaflet */
+.leaflet-popup-content-wrapper {
+  background: hsl(var(--bg-dark)) !important;
+  color: hsl(var(--text-primary)) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius-md) !important;
+  font-family: var(--font-family) !important;
+  padding: 0px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 14px !important;
+}
+
+.leaflet-popup-tip {
+  background: hsl(var(--bg-dark)) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.map-popup-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+}
+
+.map-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
+.map-popup-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.map-popup-body {
+  font-size: 0.8rem;
+  color: hsl(var(--text-secondary));
+  line-height: 1.4;
+}
+
+.map-popup-footer {
+  margin-top: 6px;
+}
+
+/* Iconos de Marcadores Leaflet Tácticos */
+.tactical-marker-icon {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-pin {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  background: hsl(var(--police-blue));
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -16px 0 0 -16px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marker-pin::after {
+  content: '';
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: hsl(var(--bg-darker));
+  position: absolute;
+}
+
+.marker-inner-icon {
+  position: absolute;
+  z-index: 10;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Marcadores con animación de pulso */
+.marker-pulse {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: hsla(var(--police-blue), 0.25);
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+  left: 50%;
+  top: 50%;
+  margin: -24px 0 0 -24px;
+  pointer-events: none;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+/* --- Pestaña: Despliegue / Equipos --- */
+.search-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 600px) {
+  .search-filter-bar {
+    flex-direction: row;
+  }
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  background: hsl(var(--bg-dark));
+  border: 1px solid var(--border-color);
+  padding: 12px 16px 12px 40px;
+  border-radius: var(--border-radius-md);
+  color: hsl(var(--text-primary));
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  transition: var(--transition-smooth);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: hsl(var(--police-blue));
+  box-shadow: 0 0 10px var(--border-glow);
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: hsl(var(--text-muted));
+  pointer-events: none;
+  width: 18px;
+  height: 18px;
+}
+
+.filter-select {
+  background: hsl(var(--bg-dark));
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  border-radius: var(--border-radius-md);
+  color: hsl(var(--text-primary));
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: var(--transition-smooth);
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  border-color: hsl(var(--police-blue));
+}
+
+/* Lista de Equipos */
+.teams-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.team-card {
+  background: hsl(var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--transition-smooth);
+}
+
+.team-card:hover {
+  transform: translateY(-2px);
+  border-color: hsla(var(--police-blue), 0.3);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.team-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.team-callsign {
+  font-weight: 700;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.team-callsign-type-icon {
+  color: hsl(var(--police-blue));
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 0.82rem;
+}
+
+.team-info-label {
+  color: hsl(var(--text-secondary));
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.team-info-val {
+  font-weight: 500;
+}
+
+.team-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* --- Pestaña: Agenda e Itinerarios --- */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+  margin-top: 10px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--border-color);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -24px;
+  top: 5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: hsl(var(--bg-darker));
+  border: 3px solid hsl(var(--police-blue));
+  z-index: 10;
+  box-shadow: 0 0 6px hsla(var(--police-blue), 0.4);
+}
+
+.timeline-item.vip::before {
+  border-color: hsl(var(--gold-papal));
+  box-shadow: 0 0 6px hsla(var(--gold-papal), 0.4);
+}
+
+.timeline-time {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: hsl(var(--police-blue));
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-item.vip .timeline-time {
+  color: hsl(var(--gold-papal));
+}
+
+.timeline-card {
+  background: hsl(var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 14px 16px;
+}
+
+.timeline-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.timeline-desc {
+  font-size: 0.8rem;
+  color: hsl(var(--text-secondary));
+  line-height: 1.4;
+}
+
+/* --- Pestaña: Directorio de Contactos --- */
+.contacts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (min-width: 600px) {
+  .contacts-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.contact-card {
+  background: hsl(var(--bg-card));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contact-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.contact-role {
+  font-size: 0.75rem;
+  color: hsl(var(--text-secondary));
+  text-transform: uppercase;
+}
+
+.contact-phone {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: hsl(var(--police-blue));
+}
+
+.contact-call-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: hsl(var(--police-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.contact-call-btn:hover {
+  background: hsl(var(--police-blue));
+  color: #fff;
+  box-shadow: 0 0 10px hsla(var(--police-blue), 0.4);
+}
+
+/* --- Pestaña: Administración --- */
+.login-container {
+  max-width: 400px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.admin-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-section {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.admin-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 8px;
+}
+
+.admin-section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Formularios */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: hsl(var(--text-secondary));
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  background: hsl(var(--bg-dark));
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: var(--border-radius-md);
+  color: #fff;
+  font-family: var(--font-family);
+  font-size: 0.9rem;
+  transition: var(--transition-smooth);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: hsl(var(--police-blue));
+  box-shadow: 0 0 10px var(--border-glow);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+@media (min-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Tablas Administrativas / Listas compactas */
+.admin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-list-item {
+  background: hsl(var(--bg-card));
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.admin-list-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-list-item-title {
+  font-weight: 600;
+}
+
+.admin-list-item-subtitle {
+  color: hsl(var(--text-muted));
+  font-size: 0.75rem;
+}
+
+.admin-list-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.team-type-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.type-check-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: hsl(var(--text-primary));
+}
+
+.type-check-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: hsl(var(--police-blue));
+  cursor: pointer;
+}
+
+.admin-inline-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-color);
+}
+
+/* Modales */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-backdrop.active {
+  display: flex;
+}
+
+.modal-content {
+  background: hsl(var(--bg-dark));
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+  animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes modalSlide {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  background: hsl(var(--bg-card));
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: hsl(var(--text-secondary));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: #fff;
+}
+
+.modal-body {
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  background: hsl(var(--bg-card));
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Estilo para las alertas flotantes (Toast notifications) */
+.toast-container {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+  width: calc(100% - 40px);
+  max-width: 350px;
+}
+
+.toast {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border-color);
+  border-left: 4px solid hsl(var(--police-blue));
+  padding: 12px 16px;
+  border-radius: var(--border-radius-sm);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  pointer-events: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+.toast.success { border-left-color: hsl(var(--success)); }
+.toast.danger { border-left-color: hsl(var(--danger)); }
+.toast.warning { border-left-color: hsl(var(--warning)); }
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Pantalla de carga */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: hsl(var(--bg-darker));
+  z-index: 4000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: opacity 0.5s ease;
+}
+
+.loader-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(59, 130, 246, 0.1);
+  border-top-color: hsl(var(--police-blue));
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loader-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: hsl(var(--text-secondary));
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Scrollbars personalizadas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--bg-darker));
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--text-muted));
+}

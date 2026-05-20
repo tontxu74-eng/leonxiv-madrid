@@ -1,0 +1,23 @@
+{
+  "short_name": "Disp. León XIV",
+  "name": "Dispositivo Táctico León XIV - Unidad Aérea de la Policía",
+  "description": "Aplicación web táctica para la gestión y consulta del despliegue aéreo de seguridad durante la visita de SS León XIV.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#0b0f19",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "Logo app web.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "Logo app web.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

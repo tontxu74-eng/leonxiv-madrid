@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0b0f19">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LEÓN XIV - Unidad Aérea de la Policía</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="shortcut icon" href="#" />
+
+  <!-- CSS de Leaflet (Mapas) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Pantalla de Carga Inicial -->
+  <div class="loader-overlay" id="app-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Cargando Sistema Táctico...</div>
+  </div>
+
+  <div class="app-container">
+    <!-- Cabecera Táctica -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="header-logo">
+          <img src="Logo app web.png" alt="Unidad Aérea" class="header-logo-img">
+        </div>
+        <div class="header-titles">
+          <span class="header-title">DISP. LEÓN XIV</span>
+          <span class="header-subtitle">Unidad Aérea de la Policía</span>
+        </div>
+      </div>
+      <!-- Indicador de Red / Firebase -->
+      <div class="connection-badge" id="network-status">
+        <span class="connection-dot"></span>
+        <span id="network-text">ONLINE</span>
+      </div>
+    </header>
+
+    <!-- Contenido de las Pestañas (SPA) -->
+    <main class="app-content">
+
+      <!-- PESTAÑA 1: DASHBOARD -->
+      <section id="dashboard-tab" class="tab-view active">
+        <h1 class="page-title">Dashboard Táctico</h1>
+        <p class="page-subtitle">Visión general del despliegue en Las Palmas de G.C.</p>
+
+        <div class="dashboard-grid">
+          <!-- Tarjeta de Estadísticas de Equipos -->
+          <div class="card">
+            <h2 class="card-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Medios Desplegados
+            </h2>
+            <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+              <div class="stat-card card" style="margin-bottom: 0; background: rgba(255,255,255,0.03);">
+                <div class="stat-icon"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2v20M2 12h20"/></svg></div>
+                <div class="stat-info">
+                  <span class="stat-num" id="stat-uas">0</span>
+                  <span class="stat-label">Equipos UAS</span>
+                </div>
+              </div>
+              <div class="stat-card card" style="margin-bottom: 0; background: rgba(255,255,255,0.03);">
+                <div class="stat-icon.warning-color" class="stat-icon" style="color: hsl(var(--danger));"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4M12 16h.01"/></svg></div>
+                <div class="stat-info">
+                  <span class="stat-num" id="stat-cuas">0</span>
+                  <span class="stat-label">C-UAS</span>
+                </div>
+              </div>
+              <div class="stat-card card" style="margin-bottom: 0; background: rgba(255,255,255,0.03);">
+                <div class="stat-icon" style="color: hsl(var(--gold-papal));"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+                <div class="stat-info">
+                  <span class="stat-num" id="stat-helo">0</span>
+                  <span class="stat-label">Helicópteros</span>
+                </div>
+              </div>
+              <div class="stat-card card" style="margin-bottom: 0; background: rgba(255,255,255,0.03);">
+                <div class="stat-icon" style="color: hsl(var(--success));"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div class="stat-info">
+                  <span class="stat-num" id="stat-total">0</span>
+                  <span class="stat-label">Total Indicativos</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canales de Transmisión e Información Clave -->
+          <div class="card">
+            <h2 class="card-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0L20 8M4 8l6.3 13L14 8m-4-6h4M3 8h18"/></svg>
+              Canales y Frecuencias
+            </h2>
+            <div class="alerts-list">
+              <div class="alert-item">
+                <div class="alert-header">
+                  <span>CANAL DIRECTO PRINCIPAL</span>
+                  <span class="badge badge-blue">TETRA</span>
+                </div>
+                <div>Frecuencia y grupo del evento cargado en terminales: <strong>GRP_AER_LEON_14</strong> (Canal 12)</div>
+              </div>
+              <div class="alert-item urgent">
+                <div class="alert-header">
+                  <span>CANAL C-UAS / INHIBICIÓN</span>
+                  <span class="badge badge-red">EMERGENCIA</span>
+                </div>
+                <div>Coordinación directa con Puesto de Mando Principal en caso de detección no autorizada: <strong>GRP_CUAS_COORD</strong>.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información Rápida de la Visita -->
+        <div class="card" style="margin-top: 20px;">
+          <h2 class="card-title" style="color: hsl(var(--gold-papal));">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            Visita de Su Santidad León XIV
+          </h2>
+          <p style="font-size: 0.9rem; line-height: 1.5; color: hsl(var(--text-secondary)); margin-bottom: 12px;">
+            El dispositivo de seguridad comprende la cobertura de las rutas papales, el helipuerto y la zona metropolitana.
+            Los compañeros de la península deben estar atentos a los cambios de itinerario debido a protocolos de última hora.
+            Cualquier incidencia debe notificarse inmediatamente al Puesto de Mando Aéreo.
+          </p>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('map')">Ver Mapa Táctico</button>
+            <button class="btn btn-secondary btn-sm" onclick="switchTab('timeline')">Agenda del Evento</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 2: MAPA TÁCTICO -->
+      <section id="map-tab" class="tab-view">
+        <div class="map-container-wrapper">
+          <div id="map"></div>
+          <!-- Panel Flotante Informativo en el Mapa -->
+          <div class="map-overlay-panel">
+            <div class="tactical-info-box">
+              <div class="tactical-info-title">Simbología Táctica</div>
+              <div class="tactical-info-row">
+                <span>🚁 Helicópteros (HELO)</span>
+                <span style="color: hsl(var(--gold-papal)); font-weight: bold;">Dorado</span>
+              </div>
+              <div class="tactical-info-row">
+                <span>🛸 Equipos UAS</span>
+                <span style="color: hsl(var(--police-blue)); font-weight: bold;">Azul</span>
+              </div>
+              <div class="tactical-info-row">
+                <span>🛡️ Sensores C-UAS</span>
+                <span style="color: hsl(var(--danger)); font-weight: bold;">Rojo</span>
+              </div>
+              <div class="tactical-info-row" style="margin-top: 4px; border-top: 1px solid var(--border-color); padding-top: 4px;">
+                <span>📍 Ubicaciones Activas</span>
+                <span id="map-counter-active" style="font-weight: bold;">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 3: DESPLIEGUE (EQUIPOS) -->
+      <section id="teams-tab" class="tab-view">
+        <h1 class="page-title">Equipos Desplegados</h1>
+        <p class="page-subtitle">Indicativos de la Unidad Aérea en posiciones estratégicas.</p>
+
+        <!-- Barra de búsqueda y filtrado -->
+        <div class="search-filter-bar">
+          <div class="search-input-wrapper">
+            <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" id="search-teams" class="search-input" placeholder="Buscar indicativo, sector, agentes...">
+          </div>
+          <select id="filter-team-type" class="filter-select">
+            <option value="todos">Todos los Medios</option>
+            <option value="HELO">Helicópteros (HELO)</option>
+            <option value="UAS">Drones (UAS)</option>
+            <option value="CUAS">Contra-Drones (C-UAS)</option>
+          </select>
+        </div>
+
+        <!-- Listado dinámico de equipos -->
+        <div class="teams-list" id="teams-container">
+          <!-- Renderizado dinámico por JS -->
+          <div class="card" style="text-align: center; color: var(--text-secondary);">
+            Cargando base de datos táctica...
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 4: ITINERARIO Y AGENDA -->
+      <section id="timeline-tab" class="tab-view">
+        <h1 class="page-title">Agenda e Itinerarios</h1>
+        <p class="page-subtitle">Cronología de SS León XIV y rutas de desplazamiento.</p>
+
+        <div class="timeline" id="timeline-container">
+          <!-- Renderizado dinámico por JS -->
+          <div class="card" style="text-align: center; color: var(--text-secondary);">
+            Cargando itinerarios y eventos...
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 5: DIRECTORIO DE CONTACTOS -->
+      <section id="directory-tab" class="tab-view">
+        <h1 class="page-title">Directorio Táctico</h1>
+        <p class="page-subtitle">Responsables de unidad y números de emergencia.</p>
+
+        <div class="contacts-grid" id="contacts-container">
+          <!-- Renderizado dinámico por JS -->
+          <div class="card" style="text-align: center; color: var(--text-secondary);">
+            Cargando contactos de seguridad...
+          </div>
+        </div>
+      </section>
+
+      <!-- PESTAÑA 6: ADMINISTRACIÓN -->
+      <section id="admin-tab" class="tab-view">
+        <h1 class="page-title">Panel de Control</h1>
+        <p class="page-subtitle">Edición y gestión en tiempo real del despliegue táctico.</p>
+
+        <!-- Formulario de acceso/Login táctico -->
+        <div class="login-container card" id="admin-login-card">
+          <div class="stat-icon" style="margin: 0 auto 16px auto; width: 60px; height: 60px; background: rgba(59, 130, 246, 0.1);">
+            <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <h2 class="card-title" style="justify-content: center; margin-bottom: 6px;">Acceso Restringido</h2>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 20px;">Introduce el PIN Táctico de Administrador.</p>
+          <div class="form-group">
+            <input type="password" id="admin-pin-input" class="form-input" placeholder="••••" style="text-align: center; font-size: 1.5rem; letter-spacing: 6px;" maxlength="8">
+          </div>
+          <button class="btn" id="admin-login-btn">Verificar Credenciales</button>
+        </div>
+
+        <!-- Panel de Administrador Autenticado -->
+        <div id="admin-panel-content" style="display: none;">
+          <div class="admin-header-actions">
+            <button class="btn btn-sm" onclick="openAddTeamModal()" style="width: auto;">+ Añadir Equipo</button>
+            <button class="btn btn-sm btn-secondary" onclick="openAddEventModal()" style="width: auto;">+ Añadir Evento</button>
+            <button class="btn btn-sm btn-secondary" onclick="openAddContactModal()" style="width: auto;">+ Añadir Contacto</button>
+            <button class="btn btn-sm btn-secondary" onclick="openAddLocationModal()" style="width: auto;">+ Añadir Ubicación</button>
+            <button class="btn btn-sm btn-secondary" onclick="openAddRouteModal()" style="width: auto;">+ Añadir Itinerario</button>
+            <button class="btn btn-sm btn-secondary" id="btn-export-json" style="width: auto;">Exportar JSON</button>
+            <button class="btn btn-sm btn-secondary" id="btn-import-json" style="width: auto;">Importar JSON</button>
+            <input type="file" id="import-json-file" style="display: none;" accept=".json">
+            <button class="btn btn-sm btn-danger" id="admin-logout-btn" style="width: auto; margin-left: auto;">Cerrar Panel</button>
+          </div>
+
+          <div class="admin-sections">
+            <!-- Sección: Equipos -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Equipos de la Unidad</h3>
+                <span class="badge badge-blue" id="admin-count-teams">0</span>
+              </div>
+              <div class="admin-list" id="admin-teams-list">
+                <!-- Dinámico -->
+              </div>
+            </div>
+
+            <!-- Sección: Eventos e Itinerarios -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Agenda y Recorridos</h3>
+                <span class="badge badge-gold" id="admin-count-events">0</span>
+              </div>
+              <div class="admin-list" id="admin-events-list">
+                <!-- Dinámico -->
+              </div>
+            </div>
+
+            <!-- Sección: Contactos -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Contactos Clave</h3>
+                <span class="badge badge-green" id="admin-count-contacts">0</span>
+              </div>
+              <div class="admin-list" id="admin-contacts-list">
+                <!-- Dinámico -->
+              </div>
+            </div>
+
+            <!-- Sección: Ubicaciones de Interés -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Ubicaciones de Interés</h3>
+                <span class="badge badge-blue" id="admin-count-locations">0</span>
+              </div>
+              <div class="admin-list" id="admin-locations-list">
+                <!-- Dinámico -->
+              </div>
+            </div>
+
+            <!-- Sección: Itinerarios / Rutas -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Itinerarios y Recorridos</h3>
+                <span class="badge badge-gold" id="admin-count-routes">0</span>
+              </div>
+              <div class="admin-list" id="admin-routes-list">
+                <!-- Dinámico -->
+              </div>
+            </div>
+
+            <!-- Sección: Seguridad — Cambio de PIN -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Cambiar PIN de Acceso</h3>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="pin-nuevo">Nuevo PIN</label>
+                  <input type="password" id="pin-nuevo" class="form-input" placeholder="Nuevo PIN" maxlength="8">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pin-confirmar">Confirmar PIN</label>
+                  <input type="password" id="pin-confirmar" class="form-input" placeholder="Repetir PIN" maxlength="8">
+                </div>
+              </div>
+              <button class="btn btn-sm" onclick="cambiarPin()" style="width:auto;">Guardar nuevo PIN</button>
+            </div>
+
+            <!-- Sección: Zona Peligrosa -->
+            <div class="admin-section" style="border-color: rgba(239,68,68,0.3);">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title" style="color:hsl(var(--danger));">Zona Peligrosa</h3>
+              </div>
+              <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:12px; line-height:1.4;">
+                Borra permanentemente todos los datos del despliegue (equipos, eventos, contactos, ubicaciones e itinerarios). Esta acción no se puede deshacer.
+              </p>
+              <button class="btn btn-sm btn-danger" onclick="borrarTodosLosDatos()" style="width:auto;">Borrar todos los datos</button>
+            </div>
+
+            <!-- Sección: Configuración Firebase (Nube) -->
+            <div class="admin-section">
+              <div class="admin-section-header">
+                <h3 class="admin-section-title">Conexión a Firebase (Nube)</h3>
+                <span class="badge" id="firebase-status-badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">Desconectado</span>
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
+                Pega la configuración del SDK de Firebase (en formato JSON) para habilitar la sincronización en la nube con todos los agentes. Si está desconectado, los datos se guardan en el dispositivo local.
+              </p>
+              <div class="form-group">
+                <textarea id="firebase-config-input" class="form-textarea" rows="4" style="font-family: monospace; font-size: 0.78rem;" placeholder='{
+  "apiKey": "AIzaSy...",
+  "authDomain": "leonxiv-uap.firebaseapp.com",
+  "projectId": "leonxiv-uap",
+  "storageBucket": "leonxiv-uap.appspot.com",
+  "messagingSenderId": "123456789",
+  "appId": "1:12345:web:abcd"
+}'></textarea>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn btn-sm" id="btn-save-firebase-config" style="width: auto;">Guardar y Conectar</button>
+                <button class="btn btn-sm btn-secondary" id="btn-clear-firebase-config" style="width: auto; color: hsl(var(--danger));">Borrar Conexión</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Barra de Navegación Táctica (SPA Tabs) -->
+    <nav class="app-nav">
+      <button class="nav-item active" onclick="switchTab('dashboard')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="switchTab('map')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2a8 8 0 00-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 00-8-8z"/><circle cx="12" cy="10" r="3"/></svg>
+        Mapa
+      </button>
+      <button class="nav-item" onclick="switchTab('teams')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Equipos
+      </button>
+      <button class="nav-item" onclick="switchTab('timeline')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+        Agenda
+      </button>
+      <button class="nav-item" onclick="switchTab('directory')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Contactos
+      </button>
+      <button class="nav-item" onclick="switchTab('admin')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Admin
+      </button>
+    </nav>
+  </div>
+
+  <!-- Contenedor Flotante para Toasts/Alertas -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- MODAL: EQUIPO (AÑADIR / EDITAR) -->
+  <div class="modal-backdrop" id="modal-team">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-team-title">Añadir Medio Aéreo / Equipo</h4>
+        <button class="modal-close" onclick="closeModal('modal-team')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-team">
+          <input type="hidden" id="team-id">
+          <div class="form-group">
+            <label class="form-label" for="team-callsign">Indicativo Táctico</label>
+            <input type="text" id="team-callsign" class="form-input" placeholder="Ej. CONDOR 1, PEGASUS 4, UAS-N1" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tipo de Medio (puede ser varios)</label>
+              <div class="team-type-checks">
+                <label class="type-check-label">
+                  <input type="checkbox" id="team-type-helo" value="HELO"> 🚁 Helicóptero (HELO)
+                </label>
+                <label class="type-check-label">
+                  <input type="checkbox" id="team-type-uas" value="UAS"> 🛸 Drone (UAS)
+                </label>
+                <label class="type-check-label">
+                  <input type="checkbox" id="team-type-cuas" value="CUAS"> 🛡️ Inhibición (C-UAS)
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="team-sector">Sector / Ubicación</label>
+              <input type="text" id="team-sector" class="form-input" placeholder="Ej. Helipuerto, Santa Catalina" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="team-lat">Latitud</label>
+              <input type="text" id="team-lat" class="form-input" placeholder="28.1003 o 28°6'1.4&quot;N" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="team-lng">Longitud</label>
+              <input type="text" id="team-lng" class="form-input" placeholder="-15.4567 o 15°23'36.7&quot;W">
+            </div>
+          </div>
+          <div class="form-group" style="display: flex; gap: 10px; margin-top: 8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setSeedCoordinatesToForm('team-lat', 'team-lng', 1)">Semilla A</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="setSeedCoordinatesToForm('team-lat', 'team-lng', 2)">Semilla B</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="getCurrentCoordinatesInForm('team-lat', 'team-lng')">Mi GPS</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="team-officers">Agentes asignados</label>
+              <input type="text" id="team-officers" class="form-input" placeholder="Ej. Oficial Díaz, Policía Gómez">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="team-phone">Teléfono de contacto</label>
+              <input type="tel" id="team-phone" class="form-input" placeholder="Ej. 600123456">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="team-freq">Canal de Radio / Frecuencia</label>
+            <input type="text" id="team-freq" class="form-input" placeholder="Ej. CANAL 12, GRP_AER_1">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="team-notes">Instrucciones Operativas / Notas</label>
+            <textarea id="team-notes" class="form-textarea" rows="3" placeholder="Restricciones de vuelo, frecuencias auxiliares, etc."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-team')">Cancelar</button>
+        <button class="btn" id="btn-save-team" onclick="saveTeam()">Guardar Equipo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: EVENTO (AÑADIR / EDITAR) -->
+  <div class="modal-backdrop" id="modal-event">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-event-title">Añadir Hito en Agenda</h4>
+        <button class="modal-close" onclick="closeModal('modal-event')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-event">
+          <input type="hidden" id="event-id">
+          <div class="form-group">
+            <label class="form-label" for="event-title">Título del Evento / Recorrido</label>
+            <input type="text" id="event-title" class="form-input" placeholder="Ej. Llegada SS León XIV, Recorrido Papamóvil" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="event-time">Hora</label>
+              <input type="text" id="event-time" class="form-input" placeholder="Ej. 10:30, Todo el día" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="event-vip">¿Involucra a la Comitiva Papal (VIP)?</label>
+              <select id="event-vip" class="form-select">
+                <option value="si">Sí (Dorado)</option>
+                <option value="no">No (Azul)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="event-desc">Detalles del itinerario y cobertura aérea</label>
+            <textarea id="event-desc" class="form-textarea" rows="4" placeholder="Itinerario detallado, sectores que deben reforzar vigilancia, etc." required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-event')">Cancelar</button>
+        <button class="btn" id="btn-save-event" onclick="saveEvent()">Guardar Evento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CONTACTO (AÑADIR / EDITAR) -->
+  <div class="modal-backdrop" id="modal-contact">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-contact-title">Añadir Contacto Directo</h4>
+        <button class="modal-close" onclick="closeModal('modal-contact')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-contact">
+          <input type="hidden" id="contact-id">
+          <div class="form-group">
+            <label class="form-label" for="contact-name">Nombre / Identificación</label>
+            <input type="text" id="contact-name" class="form-input" placeholder="Ej. Inspector Jefe Díaz, Puesto Mando" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-role">Cargo / Unidad</label>
+            <input type="text" id="contact-role" class="form-input" placeholder="Ej. Responsable UAS / Coordinación Central" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-phone">Número de Teléfono</label>
+            <input type="tel" id="contact-phone" class="form-input" placeholder="Ej. 600112233" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-contact')">Cancelar</button>
+        <button class="btn" id="btn-save-contact" onclick="saveContact()">Guardar Contacto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UBICACIÓN (AÑADIR / EDITAR) -->
+  <div class="modal-backdrop" id="modal-location">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-location-title">Añadir Ubicación</h4>
+        <button class="modal-close" onclick="closeModal('modal-location')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-location">
+          <input type="hidden" id="location-id">
+          <div class="form-group">
+            <label class="form-label" for="location-name">Nombre / Descripción</label>
+            <input type="text" id="location-name" class="form-input" placeholder="Ej. 👑 Zona VIP, 🏢 PMA, 🚫 Área Restringida" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="location-type">Tipo de Ubicación</label>
+            <select id="location-type" class="form-select" required>
+              <option value="PMA">🏢 Puesto de Mando (PMA)</option>
+              <option value="VIP">👑 Zona VIP / Comitiva</option>
+              <option value="RESTRINGIDO">🚫 Zona Restringida</option>
+              <option value="OTRO">📌 Otro</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="location-lat">Latitud</label>
+              <input type="text" id="location-lat" class="form-input" placeholder='28.1003 o 28°6&apos;1"N' required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="location-lng">Longitud</label>
+              <input type="text" id="location-lng" class="form-input" placeholder='-15.4567 o 15°27&apos;24"W'>
+            </div>
+          </div>
+          <div class="form-group" style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="activarModoSeleccionUbicacion()">📍 Elegir en mapa</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="location-desc">Descripción Operativa</label>
+            <textarea id="location-desc" class="form-textarea" rows="2" placeholder="Detalles tácticos, restricciones, cobertura necesaria..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-location')">Cancelar</button>
+        <button class="btn" onclick="saveLocation()">Guardar Ubicación</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ITINERARIO / RUTA (AÑADIR / EDITAR) -->
+  <div class="modal-backdrop" id="modal-route">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-route-title">Añadir Itinerario</h4>
+        <button class="modal-close" onclick="closeModal('modal-route')">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form-route">
+          <input type="hidden" id="route-id">
+          <div class="form-group">
+            <label class="form-label" for="route-name">Nombre del Itinerario</label>
+            <input type="text" id="route-name" class="form-input" placeholder="Ej. Recorrido Papamóvil, Ruta Escolta" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="route-color">Color en el Mapa</label>
+              <select id="route-color" class="form-select">
+                <option value="hsl(var(--gold-papal))">⭐ Dorado (Comitiva Papal)</option>
+                <option value="hsl(var(--police-blue))">🔵 Azul (Policial)</option>
+                <option value="hsl(var(--danger))">🔴 Rojo (Alerta / Restringido)</option>
+                <option value="#22c55e">🟢 Verde (Alternativo)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="route-desc">Descripción Operativa</label>
+            <textarea id="route-desc" class="form-textarea" rows="2" placeholder="Ej. Itinerario oficial del Papamóvil con escolta motorizada"></textarea>
+          </div>
+          <!-- Sección: Calcular ruta automática -->
+          <div class="form-group">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSeccionRutaAuto(this)" style="width:100%; margin-bottom:6px;">
+              🗺️ Calcular ruta automática entre dos puntos ▸
+            </button>
+            <div id="ruta-auto-section" style="display:none; border:1px solid var(--border-color); border-radius:8px; padding:12px; margin-bottom:8px;">
+              <p style="font-size:0.76rem; color:var(--text-secondary); margin-bottom:10px; line-height:1.5;">
+                Introduce origen y destino (decimal o grados). La ruta se calculará por carreteras y rellenará el campo de puntos automáticamente.
+              </p>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label class="form-label">Origen</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="route-origen" class="form-input" placeholder='28.1003,-15.4567 o 28°6&apos;1"N,15°27&apos;24"W' style="flex:1;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="activarModoSeleccionMapa('route-origen')" style="flex-shrink:0;">📍</button>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label class="form-label">Destino</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="route-destino" class="form-input" placeholder='28.1003,-15.4567 o 28°6&apos;1"N,15°27&apos;24"W' style="flex:1;">
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="activarModoSeleccionMapa('route-destino')" style="flex-shrink:0;">📍</button>
+                </div>
+              </div>
+              <button type="button" class="btn btn-sm" id="btn-calcular-ruta" onclick="calcularRutaAutomatica()" style="width:100%;">
+                Calcular ruta
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="route-coordinates">Puntos del Recorrido</label>
+            <p style="font-size:0.76rem; color:var(--text-secondary); margin-bottom:8px; line-height:1.5;">
+              Un punto por línea en formato <strong>lat,lng</strong>. Acepta decimal (<code>28.1003,-15.4567</code>) o grados (<code>28°6'1.4"N,15°23'36.7"W</code>).
+            </p>
+            <textarea id="route-coordinates" class="form-textarea" rows="5" style="font-family: monospace; font-size: 0.82rem;" placeholder="28.100387,-15.456785&#10;28.099120,-15.441230&#10;28.102550,-15.424350" required></textarea>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="activarModoSeleccionMapa()" style="margin-top:8px; width:100%;">
+              📍 Añadir puntos haciendo clic en el mapa
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('modal-route')">Cancelar</button>
+        <button class="btn" onclick="saveRoute()">Guardar Itinerario</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Banner flotante para selección de ubicación en mapa -->
+  <div id="location-pick-banner" style="display:none; position:fixed; bottom:75px; left:50%; transform:translateX(-50%); z-index:3000; background:hsl(var(--bg-dark)); border:1px solid hsl(var(--police-blue)); border-radius:12px; padding:12px 20px; align-items:center; gap:14px; box-shadow:0 8px 30px rgba(0,0,0,0.6); font-size:0.85rem; white-space:nowrap;">
+    <span>📍 Haz clic en el mapa para fijar la ubicación</span>
+    <button class="btn btn-sm btn-secondary" onclick="cancelarModoSeleccionUbicacion()">Cancelar</button>
+  </div>
+
+  <!-- Banner flotante para modo selección de puntos en mapa -->
+  <div id="map-pick-banner" style="display:none; position:fixed; bottom:75px; left:50%; transform:translateX(-50%); z-index:3000; background:hsl(var(--bg-dark)); border:1px solid hsl(var(--police-blue)); border-radius:12px; padding:12px 20px; display:none; align-items:center; gap:14px; box-shadow:0 8px 30px rgba(0,0,0,0.6); font-size:0.85rem; white-space:nowrap;">
+    <span>📍 Haz clic en el mapa para añadir puntos</span>
+    <span id="map-pick-count" style="color:hsl(var(--gold-papal)); font-weight:700;">0 puntos</span>
+    <button class="btn btn-sm" onclick="finalizarModoSeleccionMapa()">✓ Listo</button>
+    <button class="btn btn-sm btn-secondary" onclick="cancelarModoSeleccionMapa()">Cancelar</button>
+  </div>
+
+  <!-- Librería de Mapas Leaflet -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Lógica de Negocio de la Aplicación -->
+  <script src="app.js"></script>
+</body>
+</html>
