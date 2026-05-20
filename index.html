@@ -433,20 +433,21 @@
               <input type="text" id="team-sector" class="form-input" placeholder="Ej. Helipuerto, Santa Catalina" required>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="team-lat">Latitud</label>
-              <input type="text" id="team-lat" class="form-input" placeholder="28.1003 o 28°6'1.4&quot;N" required>
+          <input type="hidden" id="team-lat" required>
+          <input type="hidden" id="team-lng">
+          <div class="form-group">
+            <label class="form-label">Posición en el mapa</label>
+            <div id="team-coords-display" style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:8px; min-height:1.2em;">
+              Sin posición fijada
             </div>
-            <div class="form-group">
-              <label class="form-label" for="team-lng">Longitud</label>
-              <input type="text" id="team-lng" class="form-input" placeholder="-15.4567 o 15°23'36.7&quot;W">
+            <div style="display:flex; gap:8px;">
+              <button type="button" class="btn btn-sm" onclick="activarModoSeleccionEquipo()" style="flex:1;">
+                📍 Elegir en el mapa
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="getCurrentCoordinatesInForm('team-lat','team-lng')" style="flex:1;">
+                🛰️ Mi GPS
+              </button>
             </div>
-          </div>
-          <div class="form-group" style="display: flex; gap: 10px; margin-top: 8px;">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="setSeedCoordinatesToForm('team-lat', 'team-lng', 1)">Semilla A</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="setSeedCoordinatesToForm('team-lat', 'team-lng', 2)">Semilla B</button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="getCurrentCoordinatesInForm('team-lat', 'team-lng')">Mi GPS</button>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -678,6 +679,12 @@
         <button class="btn" onclick="saveRoute()">Guardar Itinerario</button>
       </div>
     </div>
+  </div>
+
+  <!-- Banner flotante para selección de posición de equipo -->
+  <div id="team-pick-banner" style="display:none; position:fixed; bottom:75px; left:50%; transform:translateX(-50%); z-index:3000; background:hsl(var(--bg-dark)); border:1px solid hsl(var(--gold-papal)); border-radius:12px; padding:12px 20px; align-items:center; gap:14px; box-shadow:0 8px 30px rgba(0,0,0,0.6); font-size:0.85rem; white-space:nowrap;">
+    <span>📍 Haz clic en el mapa para fijar la posición del equipo</span>
+    <button class="btn btn-sm btn-secondary" onclick="cancelarModoSeleccionEquipo()">Cancelar</button>
   </div>
 
   <!-- Banner flotante para selección de ubicación en mapa -->

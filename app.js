@@ -400,6 +400,20 @@ function initMap() {
     const lat = e.latlng.lat.toFixed(6);
     const lng = e.latlng.lng.toFixed(6);
 
+    // Modo selección de posición de equipo
+    const teamBanner = document.getElementById('team-pick-banner');
+    if (teamBanner && teamBanner.style.display === 'flex') {
+      document.getElementById('team-lat').value = lat;
+      document.getElementById('team-lng').value = lng;
+      L.circleMarker([parseFloat(lat), parseFloat(lng)], {
+        radius: 7, color: 'hsl(var(--gold-papal))', fillColor: 'hsl(var(--gold-papal))', fillOpacity: 0.9, weight: 2
+      }).addTo(appState.map).bindTooltip('Posición equipo', { permanent: true, direction: 'top', offset: [0, -10] });
+      teamBanner.style.display = 'none';
+      document.getElementById('modal-team').style.visibility = 'visible';
+      actualizarDisplayCoordsEquipo();
+      return;
+    }
+
     // Modo selección de punto único para ubicación
     const locBanner = document.getElementById('location-pick-banner');
     if (locBanner && locBanner.style.display === 'flex') {
@@ -1129,6 +1143,7 @@ window.openAddTeamModal = function() {
   document.getElementById('form-team').reset();
   document.getElementById('team-id').value = '';
   document.getElementById('modal-team-title').textContent = 'Añadir Medio Aéreo / Equipo';
+  actualizarDisplayCoordsEquipo();
   openModal('modal-team');
 };
 
@@ -1146,6 +1161,7 @@ window.openEditTeamModal = function(id) {
   document.getElementById('team-sector').value = team.sector;
   document.getElementById('team-lat').value = team.lat;
   document.getElementById('team-lng').value = team.lng;
+  actualizarDisplayCoordsEquipo();
   document.getElementById('team-officers').value = team.officers || '';
   document.getElementById('team-phone').value = team.phone || '';
   document.getElementById('team-freq').value = team.freq || '';
@@ -1561,6 +1577,32 @@ window.saveLocation = function() {
 };
 
 // Modo selección de punto en mapa para ubicación
+// Actualiza el texto de coordenadas visible en el modal de equipo
+function actualizarDisplayCoordsEquipo() {
+  const lat = document.getElementById('team-lat').value;
+  const lng = document.getElementById('team-lng').value;
+  const display = document.getElementById('team-coords-display');
+  if (display) {
+    display.textContent = lat && lng
+      ? `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`
+      : 'Sin posición fijada';
+    display.style.color = lat && lng ? 'hsl(var(--gold-papal))' : 'var(--text-secondary)';
+  }
+}
+
+window.activarModoSeleccionEquipo = function() {
+  document.getElementById('modal-team').style.visibility = 'hidden';
+  switchTab('map', false);
+  document.getElementById('team-pick-banner').style.display = 'flex';
+  if (!appState.map) initMap();
+  setTimeout(() => appState.map && appState.map.invalidateSize(), 150);
+};
+
+window.cancelarModoSeleccionEquipo = function() {
+  document.getElementById('team-pick-banner').style.display = 'none';
+  document.getElementById('modal-team').style.visibility = 'visible';
+};
+
 window.activarModoSeleccionUbicacion = function() {
   document.getElementById('modal-location').style.visibility = 'hidden';
   switchTab('map', false);
@@ -1768,6 +1810,7 @@ window.getCurrentCoordinatesInForm = function(latInputId, lngInputId) {
     (position) => {
       document.getElementById(latInputId).value = position.coords.latitude;
       document.getElementById(lngInputId).value = position.coords.longitude;
+      if (latInputId === 'team-lat') actualizarDisplayCoordsEquipo();
       showToast("Coordenadas GPS obtenidas correctamente", "success");
     },
     (error) => {
