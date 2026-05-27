@@ -22,8 +22,8 @@ let appState = {
 
 // Coordenadas Semilla
 const SEED_COORDS = {
-  1: { lat: 28.100387400330703, lng: -15.456785262068824, label: "PMA (Base)" },
-  2: { lat: 28.100800500492635, lng: -15.414901945876656, label: "Santa Catalina" }
+  1: { lat: 40.41650, lng: -3.70359, label: "PMA (Base)" },
+  2: { lat: 40.41650, lng: -3.70359, label: "Punto de Referencia" }
 };
 
 // Datos semilla por defecto (si la base de datos está vacía o corre en local)
@@ -185,12 +185,12 @@ function loadFirebaseScripts() {
 
 // Configuración de producción (siempre activa)
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAGCnoClKd_D-OnFTAbx-7Xr6mqF8tz9CY",
-  authDomain: "leonxiv-uap.firebaseapp.com",
-  projectId: "leonxiv-uap",
-  storageBucket: "leonxiv-uap.firebasestorage.app",
-  messagingSenderId: "549657606381",
-  appId: "1:549657606381:web:810f4a505181eea0a5b4e4"
+  apiKey: "AIzaSyBnU-1qCLlCi3Nlgy9bL3aO0JQnZRNRbdc",
+  authDomain: "leonxiv-madrid.firebaseapp.com",
+  projectId: "leonxiv-madrid",
+  storageBucket: "leonxiv-madrid.firebasestorage.app",
+  messagingSenderId: "699436573374",
+  appId: "1:699436573374:web:17ad727730fd3ad721f4ef"
 };
 
 function setupFirebase() {
