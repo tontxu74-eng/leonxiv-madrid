@@ -438,8 +438,8 @@ function updateNetworkBadge(online) {
 function initMap() {
   if (appState.map) return; // Ya inicializado
 
-  // Crear mapa centrado en Las Palmas de G.C. (Coordenada Semilla 1)
-  const defaultCenter = [28.100387400330703, -15.456785262068824];
+  // Centrar el mapa en la coordenada semilla del proyecto
+  const defaultCenter = [SEED_COORDS[1].lat, SEED_COORDS[1].lng];
   appState.map = L.map('map', {
     zoomControl: false, // Lo reposicionamos más tarde
     attributionControl: false
