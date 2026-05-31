@@ -220,12 +220,12 @@ function loadFirebaseScripts() {
 
 // Configuración de producción (siempre activa)
 const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAGCnoClKd_D-OnFTAbx-7Xr6mqF8tz9CY",
-  authDomain: "leonxiv-uap.firebaseapp.com",
-  projectId: "leonxiv-uap",
-  storageBucket: "leonxiv-uap.firebasestorage.app",
-  messagingSenderId: "549657606381",
-  appId: "1:549657606381:web:810f4a505181eea0a5b4e4"
+  apiKey: "AIzaSyBnU-1qCLlCi3Nlgy9bL3aO0JQnZRNRbdc",
+  authDomain: "leonxiv-madrid.firebaseapp.com",
+  projectId: "leonxiv-madrid",
+  storageBucket: "leonxiv-madrid.firebasestorage.app",
+  messagingSenderId: "699436573374",
+  appId: "1:699436573374:web:17ad727730fd3ad721f4ef"
 };
 
 function setupFirebase() {
