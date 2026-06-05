@@ -668,12 +668,16 @@ function updateMapMarkers() {
 
   // Dibujar o actualizar marcadores
   appState.teams.forEach(team => {
+    try {
     const lat = parseFloat(team.lat);
     const lng = parseFloat(team.lng);
 
     // Guard: MOVIL sin coordenadas aún no aparece en el mapa
     if (team.type === 'MOVIL' && (isNaN(lat) || isNaN(lng))) return;
-    if (isNaN(lat) || isNaN(lng)) return;
+    if (isNaN(lat) || isNaN(lng)) {
+      console.warn('[Mapa] Equipo sin coordenadas válidas:', team.callsign, '| lat:', team.lat, 'lng:', team.lng);
+      return;
+    }
 
     // Icono y color según tipos
     const tipos = (team.type || 'UAS').split(',');
@@ -747,13 +751,17 @@ function updateMapMarkers() {
       // Actualizar posición, icono y contenido de popup si el marcador ya existe
       appState.mapMarkers[team.id].setLatLng([lat, lng]);
       appState.mapMarkers[team.id].setIcon(customIcon);
-      appState.mapMarkers[team.id].getPopup().setContent(popupContent);
+      const popup = appState.mapMarkers[team.id].getPopup();
+      if (popup) popup.setContent(popupContent);
     } else {
       // Crear nuevo marcador
       const marker = L.marker([lat, lng], { icon: customIcon })
         .addTo(appState.map)
         .bindPopup(popupContent);
       appState.mapMarkers[team.id] = marker;
+    }
+    } catch (err) {
+      console.error('[Mapa] Error procesando equipo:', team.callsign, err);
     }
   });
 
