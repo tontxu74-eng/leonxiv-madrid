@@ -674,11 +674,7 @@ function updateMapMarkers() {
 
     // Guard: MOVIL sin coordenadas aún no aparece en el mapa
     if (team.type === 'MOVIL' && (isNaN(lat) || isNaN(lng))) return;
-    if (isNaN(lat) || isNaN(lng)) {
-      console.warn('[Mapa] ❌ Equipo sin coordenadas:', team.callsign, '| lat:', team.lat, '| lng:', team.lng, '| id:', team.id);
-      return;
-    }
-    console.debug('[Mapa] ✅', team.callsign, '→', lat.toFixed(5), lng.toFixed(5), appState.mapMarkers[team.id] ? '(actualizar)' : '(nuevo)');
+    if (isNaN(lat) || isNaN(lng)) return;
 
     // Icono y color según tipos
     const tipos = (team.type || 'UAS').split(',');
@@ -2622,28 +2618,6 @@ function normalizarInputCoordenada(inputId) {
   if (!isNaN(valor)) input.value = valor;
   return valor;
 }
-
-// Función de diagnóstico: llama a window.diagnosticoMapa() desde la consola del navegador
-window.diagnosticoMapa = function() {
-  console.group('=== DIAGNÓSTICO MAPA MADRID ===');
-  console.log('Total equipos en memoria:', appState.teams.length);
-  console.log('Total marcadores en mapa:', Object.keys(appState.mapMarkers).length);
-  appState.teams.forEach(t => {
-    const lat = parseFloat(t.lat);
-    const lng = parseFloat(t.lng);
-    const tieneMarker = !!appState.mapMarkers[t.id];
-    const markerPos = tieneMarker ? appState.mapMarkers[t.id].getLatLng() : null;
-    console.log(
-      tieneMarker ? '✅' : '❌',
-      t.callsign.padEnd(15),
-      '| BD:', t.lat, t.lng,
-      tieneMarker ? `| Mapa: ${markerPos.lat.toFixed(5)}, ${markerPos.lng.toFixed(5)}` : '| SIN MARCADOR',
-      isNaN(lat) || isNaN(lng) ? '⚠️ COORDENADAS INVÁLIDAS' : '',
-      t.trackingActive ? '📡 GPS ACTIVO' : ''
-    );
-  });
-  console.groupEnd();
-};
 
 // --- SEGURIDAD Y ADMINISTRACIÓN ---
 
